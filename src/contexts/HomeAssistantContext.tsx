@@ -40,16 +40,15 @@ export const HomeAssistantProvider = ({
   const [entities, setEntities] = useState<HassEntities | null>(null);
 
   const connect = async () => {
-    const storedTokens = JSON.parse(
-      localStorage.getItem("hassTokens") || "{}"
-    ) as AuthData;
-    const isExpired = storedTokens.expires_in < Date.now();
+    const storedTokens = 
+      localStorage.getItem("hassTokens") ? JSON.parse(localStorage.getItem("hassTokens") || "{}") as AuthData : null;
+    
+    const isExpired = storedTokens?.expires && storedTokens?.expires < Date.now();
     let auth;
     const hassUrl = import.meta.env.VITE_HASS_URL as string;
     if (storedTokens && !isExpired) {
       auth = createLongLivedTokenAuth(hassUrl, storedTokens.access_token);
     } else {
-      //   window.location.href = window.location.origin;
       try {
         // Try to pick up authentication after user logs in
         auth = await getAuth({

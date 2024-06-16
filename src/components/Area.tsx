@@ -11,7 +11,7 @@ export default ({ entityIds, name }: AreaProps) => {
       <h2 className="text-4xl dark:text-dark-tremor-content-strong">{name}</h2>
       <div className="flex flex-wrap justify-between mt-6 px-4">
         {entityIds.map((entityId) => (
-          <Toggle entityId={entityId} />
+          <Toggle key={entityId} entityId={entityId} />
         ))}
       </div>
     </div>
