@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { HomeAssistantContext } from "../contexts/HomeAssistantContext";
-import { Card, Switch } from "@tremor/react";
+import { Card } from "@tremor/react";
 
 interface ToggleProps {
   entityId: string;
@@ -22,27 +22,21 @@ export default ({ entityId }: ToggleProps) => {
 
   return (
     <Card
-      className={`mx-2 w-76 flex justify-around  ${
+      className={`mx-2 w-48 py-2 flex flex-column justify-around align-middle ${name.length > 0 ? '' : 'animate-pulse'} ${
         isSwitchOn ? "dark:bg-yellow-400" : ""
       }`}
       onClick={() => toggleSwitch(entityId)}
     >
       {" "}
       <p
-        className={`text-xl ${
+        className={`text-s md:text-l self-center ${
           isSwitchOn
             ? "text-tremor-content-strong"
             : "dark:text-dark-tremor-content-strong"
         }  `}
       >
         {name}
-      </p>{" "}
-      <Switch
-        className="ms-4 mt-1"
-        id="switch"
-        name="switch"
-        checked={isSwitchOn}
-      />
+      </p>
     </Card>
   );
 };

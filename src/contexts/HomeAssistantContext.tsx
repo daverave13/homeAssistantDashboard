@@ -51,9 +51,10 @@ export const HomeAssistantProvider = ({
     } else {
       try {
         // Try to pick up authentication after user logs in
+
         auth = await getAuth({
           hassUrl,
-          redirectUrl: `${window.location.origin}/homeControl`,
+          redirectUrl: `${window.location.origin}`,
           saveTokens: (tokens) => {
             localStorage.setItem("hassTokens", JSON.stringify(tokens));
           },
