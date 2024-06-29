@@ -81,6 +81,11 @@ export const HomeAssistantProvider = ({
     connect();
   }, []);
 
+  useEffect(() => {
+    console.log(entities);
+  }, [entities]);
+    
+
   return (
     <HomeAssistantContext.Provider
       value={{ connection, entities, setEntities, connect, toggleSwitch }}
