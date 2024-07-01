@@ -28,7 +28,6 @@ interface HomeAssistantContext {
   connection: Connection | null;
   entities: HassEntities | null;
   setEntities: Dispatch<SetStateAction<HassEntities | null>>;
-  // connect: () => any;
   toggleSwitch: (entityId: string) => any;
 }
 
@@ -41,7 +40,7 @@ export const HomeAssistantProvider = ({
 }: HomeAssistantContextProps) => {
   const [connection, setConnection] = useState<Connection | null>(null);
   const [entities, setEntities] = useState<HassEntities | null>(null);
-  const { isLoggedIn, setIsLoggedIn, auth } = useContext(AuthContext);
+  const { setIsLoggedIn, auth } = useContext(AuthContext);
 
   const connect = async (auth: any) => {
     console.log("connecting");

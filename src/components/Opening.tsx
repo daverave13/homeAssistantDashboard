@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { HomeAssistantContext } from "../contexts/HomeAssistantContext";
+// import { useContext } from "react";
+// import { HomeAssistantContext } from "../contexts/HomeAssistantContext";
 
 interface OpeningProps {
   name: string;
@@ -7,7 +7,7 @@ interface OpeningProps {
 }
 
 const Opening = ({ name, entityId }: OpeningProps) => {
-  const { entities } = useContext(HomeAssistantContext);
+  // const { entities } = useContext(HomeAssistantContext);
 
   return (
     <div>
