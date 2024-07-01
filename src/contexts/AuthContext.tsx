@@ -2,34 +2,43 @@ import { createContext, useEffect, useState } from "react";
 import { createLongLivedTokenAuth, getAuth } from "home-assistant-js-websocket";
 
 interface AuthContext {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (value: boolean) => void;
   auth?: any;
+  setAuth?: (value: any) => void;
 }
 
 export const AuthContext = createContext<AuthContext>({
-  isLoggedIn: false,
-  setIsLoggedIn: () => {},
+  auth: undefined,
+  setAuth: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [auth, setAuth] = useState<any>();
+  const [auth, setAuth] = useState<any>(null);
+
+  const asyncGetAuth = async () => {
+    const hassUrl = import.meta.env.VITE_HASS_URL as string;
+    await getAuth({
+      hassUrl,
+      redirectUrl: `${window.location.origin}`,
+      saveTokens: (tokens) => {
+        if (tokens?.access_token)
+          localStorage.setItem("hassToken", tokens?.access_token);
+      },
+    }).then((auth) => {
+      setAuth(auth);
+    });
+  };
 
   useEffect(() => {
     const access_token = localStorage.getItem("hassToken");
-    if (!access_token) {
-      const hassUrl = import.meta.env.VITE_HASS_URL as string;
-      getAuth({
-        hassUrl,
-        redirectUrl: `${window.location.origin}`,
-        saveTokens: (tokens) => {
-          if (tokens?.access_token)
-            localStorage.setItem("hassToken", tokens?.access_token);
-        },
-      }).then((auth) => {
-        setAuth(auth);
-      });
+    const decodedToken = access_token
+      ? JSON.parse(atob(access_token.split(".")[1]))
+      : null;
+    const isExpired = decodedToken?.exp < Date.now() / 1000;
+
+    if (!access_token || isExpired) {
+      console.log("yeet");
+      localStorage.removeItem("hassToken");
+      asyncGetAuth();
     } else {
       const newAuth = createLongLivedTokenAuth(
         import.meta.env.VITE_HASS_URL as string,
@@ -37,10 +46,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       );
       setAuth(newAuth);
     }
-  }, [isLoggedIn]);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, auth }}>
+    <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthContext.Provider>
   );

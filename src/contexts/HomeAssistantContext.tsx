@@ -8,17 +8,13 @@ import {
   useContext,
 } from "react";
 import {
-  // getAuth,
-  // createLongLivedTokenAuth,
   createConnection,
   subscribeEntities,
   callService,
   Connection,
   HassEntities,
-  // AuthData,
 } from "home-assistant-js-websocket";
 import { AuthContext } from "./AuthContext";
-// import { Navigate } from "react-router-dom";
 
 interface HomeAssistantContextProps {
   children: ReactNode;
@@ -40,18 +36,16 @@ export const HomeAssistantProvider = ({
 }: HomeAssistantContextProps) => {
   const [connection, setConnection] = useState<Connection | null>(null);
   const [entities, setEntities] = useState<HassEntities | null>(null);
-  const { setIsLoggedIn, auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
 
   const connect = async (auth: any) => {
     console.log("connecting");
 
     if (auth.data.access_token) {
-      setIsLoggedIn(true);
+      console.log(auth.data.access_token);
       const connection = await createConnection({ auth });
       subscribeEntities(connection, (ent) => setEntities(ent));
       setConnection(connection);
-    } else {
-      // window.location.href = "/login";
     }
   };
 
@@ -64,7 +58,7 @@ export const HomeAssistantProvider = ({
 
   useEffect(() => {
     console.log(auth);
-    if (!connection && auth?.data.access_token) connect(auth);
+    if (auth?.data.access_token) connect(auth);
   }, [auth]);
 
   return (

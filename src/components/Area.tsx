@@ -24,12 +24,22 @@ export default ({ toggleIds, openingIds, name }: AreaProps) => {
             toggleIds &&
             toggleIds
               .sort((a: string, b: string) => b.localeCompare(a))
-              .map((entityId) => <EntityCard entity={entities[entityId]} />)}
+              .map((entityId) => (
+                <EntityCard
+                  key={"toggle_" + entityId}
+                  entity={entities[entityId]}
+                />
+              ))}
           {entities &&
             openingIds &&
             openingIds
               .sort((a: string, b: string) => b.localeCompare(a))
-              .map((entityId) => <EntityCard entity={entities[entityId]} />)}
+              .map((entityId) => (
+                <EntityCard
+                  key={"opening_" + entityId}
+                  entity={entities[entityId]}
+                />
+              ))}
         </div>
       </div>
     </div>
