@@ -5,17 +5,20 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
+  useContext,
 } from "react";
 import {
-  getAuth,
-  createLongLivedTokenAuth,
+  // getAuth,
+  // createLongLivedTokenAuth,
   createConnection,
   subscribeEntities,
   callService,
   Connection,
   HassEntities,
-  AuthData,
+  // AuthData,
 } from "home-assistant-js-websocket";
+import { AuthContext } from "./AuthContext";
+// import { Navigate } from "react-router-dom";
 
 interface HomeAssistantContextProps {
   children: ReactNode;
@@ -25,7 +28,7 @@ interface HomeAssistantContext {
   connection: Connection | null;
   entities: HassEntities | null;
   setEntities: Dispatch<SetStateAction<HassEntities | null>>;
-  connect: () => any;
+  // connect: () => any;
   toggleSwitch: (entityId: string) => any;
 }
 
@@ -38,36 +41,19 @@ export const HomeAssistantProvider = ({
 }: HomeAssistantContextProps) => {
   const [connection, setConnection] = useState<Connection | null>(null);
   const [entities, setEntities] = useState<HassEntities | null>(null);
+  const { isLoggedIn, setIsLoggedIn, auth } = useContext(AuthContext);
 
-  const connect = async () => {
-    const storedTokens = 
-      localStorage.getItem("hassTokens") ? JSON.parse(localStorage.getItem("hassTokens") || "{}") as AuthData : null;
-    
-    const isExpired = storedTokens?.expires && storedTokens?.expires < Date.now();
-    let auth;
-    const hassUrl = import.meta.env.VITE_HASS_URL as string;
-    if (storedTokens && !isExpired) {
-      auth = createLongLivedTokenAuth(hassUrl, storedTokens.access_token);
+  const connect = async (auth: any) => {
+    console.log("connecting");
+
+    if (auth.data.access_token) {
+      setIsLoggedIn(true);
+      const connection = await createConnection({ auth });
+      subscribeEntities(connection, (ent) => setEntities(ent));
+      setConnection(connection);
     } else {
-      try {
-        // Try to pick up authentication after user logs in
-
-        auth = await getAuth({
-          hassUrl,
-          redirectUrl: `${window.location.origin}`,
-          saveTokens: (tokens) => {
-            localStorage.setItem("hassTokens", JSON.stringify(tokens));
-          },
-        });
-      } catch (err) {
-        console.log(err);
-        return;
-      }
+      // window.location.href = "/login";
     }
-    const connection = await createConnection({ auth });
-
-    subscribeEntities(connection, (ent) => setEntities(ent));
-    setConnection(connection);
   };
 
   const toggleSwitch = async (entityId: string) => {
@@ -78,17 +64,13 @@ export const HomeAssistantProvider = ({
   };
 
   useEffect(() => {
-    connect();
-  }, []);
-
-  useEffect(() => {
-    console.log(entities);
-  }, [entities]);
-    
+    console.log(auth);
+    if (!connection && auth?.data.access_token) connect(auth);
+  }, [auth]);
 
   return (
     <HomeAssistantContext.Provider
-      value={{ connection, entities, setEntities, connect, toggleSwitch }}
+      value={{ connection, entities, setEntities, toggleSwitch }}
     >
       {children}
     </HomeAssistantContext.Provider>

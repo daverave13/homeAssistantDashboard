@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.1.4",
     "@remixicon/react": "^4.2.0",
     "@tremor/react": "^3.17.2",
+    "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "home-assistant-js-websocket": "^9.3.0",
     "react": "^18.2.0",

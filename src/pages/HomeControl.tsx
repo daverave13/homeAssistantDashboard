@@ -3,10 +3,10 @@ import Area from "../components/Area";
 export default function HomeControl() {
   return (
     <>
-      <h1 className="text-5xl text-tremor-default-strong dark:text-dark-tremor-content-strong">
+      <h1 className="text-4xl text-tremor-default-strong dark:text-dark-tremor-content-strong ml-4">
         Home Control
       </h1>
-      <div className="grid grid-flow-row gap-8 mt-10 mx-10">
+      <div className="grid grid-flow-row gap-8 mt-10">
         <Area name="Office" toggleIds={["switch.office_lamp_switch_2"]} />
         <Area name="Living Room" toggleIds={["switch.sonoff_s40lite_switch"]} />
         <Area
@@ -28,10 +28,7 @@ export default function HomeControl() {
         />
         <Area
           name="Garage"
-          toggleIds={[
-            "light.garage_door_light",
-            "binary_sensor.third_reality_inc_3rdts01056z_opening",
-          ]}
+          toggleIds={["light.garage_door_light"]}
           openingIds={["binary_sensor.third_reality_inc_3rdts01056z_opening"]}
         />
       </div>{" "}

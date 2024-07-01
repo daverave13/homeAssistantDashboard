@@ -5,20 +5,22 @@ interface DetailsProps {
 }
 
 const Details = ({ entity }: DetailsProps) => {
+  console.log(entity);
+
   return (
-    <div>
+    <div className="px-5 pt-5">
       {entity.attributes.Summary ? (
-        <p className="text-xs text-tremor-content-strong dark:text-dark-tremor-content-strong">
+        <li className="text-xs text-tremor-content-strong dark:text-dark-tremor-content-strong">
           {entity.attributes.Summary.replace("(PDT)", "")}
-        </p>
+        </li>
       ) : (
-        <p className="text-xs text-tremor-content-strong dark:text-dark-tremor-content-strong">
+        <li className="text-xs text-tremor-content-strong dark:text-dark-tremor-content-strong">
           {entity.last_changed
             ? `Turned ${entity.state} at ${new Date(
                 entity.last_changed
               ).toLocaleTimeString()}`
             : "No data available"}
-        </p>
+        </li>
       )}
     </div>
   );
