@@ -1,7 +1,11 @@
 import { useState } from "react";
 import Area from "../components/Area";
-import { Badge, Button, Icon } from "@tremor/react";
-import { RiArrowUpDoubleFill } from "@remixicon/react";
+import { Badge, Button, Icon, Tab, TabGroup, TabList } from "@tremor/react";
+import {
+  RiArrowUpDoubleFill,
+  RiSortAlphabetAsc,
+  RiSortAlphabetDesc,
+} from "@remixicon/react";
 
 const pageConfig = {
   title: "Home Control",
@@ -19,7 +23,13 @@ const pageConfig = {
       toggleIds: [
         "switch.third_reality_inc_3rsp02028bz_switch",
         "switch.mesh_switch_2",
+        "switch.perimeter_string_lights_switch_2",
       ],
+    },
+    {
+      name: "Garage",
+      toggleIds: ["light.garage_door_light"],
+      openingIds: ["binary_sensor.third_reality_inc_3rdts01056z_opening"],
     },
     {
       name: "Sprinkler System",
@@ -31,16 +41,12 @@ const pageConfig = {
         "switch.driveway_planter",
       ],
     },
-    {
-      name: "Garage",
-      toggleIds: ["light.garage_door_light"],
-      openingIds: ["binary_sensor.third_reality_inc_3rdts01056z_opening"],
-    },
   ],
 };
 
 export default function HomeControl() {
   const [scrollY, setScrollY] = useState(0);
+  const [sortType, setSortType] = useState("A-Z");
 
   const scrollToArea = (area: string) => {
     const element = document.getElementById(area);
@@ -57,23 +63,51 @@ export default function HomeControl() {
     setScrollY(window.scrollY);
   };
 
+  const aToZ = (areaA: any, areaB: any) => areaA.name.localeCompare(areaB.name);
+  const zToA = (areaA: any, areaB: any) => areaB.name.localeCompare(areaA.name);
+
+  const sortTypes = [
+    { name: "A-Z", sort: aToZ, icon: RiSortAlphabetAsc },
+    { name: "Z-A", sort: zToA, icon: RiSortAlphabetDesc },
+  ];
+
+  const handleSortTypeChange = (sortType: string) => {
+    setSortType(sortType);
+  };
+
   return (
     <>
       <h1 className="text-4xl text-tremor-default-strong dark:text-dark-tremor-content-strong ml-4">
         {pageConfig.title}
       </h1>
-      <div className="flex justify-start flex-wrap gap-3 m-4">
-        {pageConfig.areas.map((area) => (
-          <Badge
-            key={"badge_" + area.name}
-            size={"lg"}
-            onClick={() => scrollToArea(area.name)}
-          >
-            {area.name}
-          </Badge>
-        ))}
+      <div className="flex flex-row gap-4 flex-wrap w-100 m-4">
+        <TabGroup className="" defaultIndex={1}>
+          <TabList variant="solid">
+            {sortTypes.map((sortType) => (
+              <Tab
+                key={sortType.name}
+                onClick={() => handleSortTypeChange(sortType.name)}
+              >
+                <Icon icon={sortType.icon} color="yellow" />
+              </Tab>
+            ))}
+          </TabList>
+        </TabGroup>
       </div>
-      <div className="grid grid-flow-row gap-8 mt-10">
+      <div className="flex justify-start flex-wrap gap-3 m-4 md:hidden">
+        {pageConfig.areas
+          .sort(sortTypes.find((sort) => sort.name === sortType)?.sort)
+          .map((area) => (
+            <Badge
+              key={"badge_" + area.name}
+              size={"lg"}
+              onClick={() => scrollToArea(area.name)}
+            >
+              {area.name}
+            </Badge>
+          ))}
+      </div>
+      <div className="grid grid-flow-row gap-8 mt-10 md:flex md:flex-wrap md:mx-10">
         {pageConfig.areas.map((area) => (
           <>
             <Area key={"area_" + area.name} {...area} />

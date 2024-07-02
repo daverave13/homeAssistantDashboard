@@ -14,12 +14,15 @@ export default ({ toggleIds, openingIds, name }: AreaProps) => {
   const { entities } = useContext(HomeAssistantContext);
 
   return (
-    <div id={name} className=" border-t-2 w-100 pt-4 ">
+    <div
+      id={name}
+      className=" border-t-2 w-100 pt-4 md:border-2 md:w-fit md:rounded-lg  "
+    >
       <h2 className="text-2xl dark:text-dark-tremor-content-strong ml-10">
         {name}
       </h2>
       <div className="flex justify-center">
-        <div className="my-4">
+        <div className="my-4 md:flex">
           {entities &&
             toggleIds &&
             toggleIds
