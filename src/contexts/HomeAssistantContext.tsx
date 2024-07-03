@@ -57,7 +57,6 @@ export const HomeAssistantProvider = ({
   };
 
   useEffect(() => {
-    console.log(auth);
     if (auth?.data.access_token) connect(auth);
   }, [auth]);
 

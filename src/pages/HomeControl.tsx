@@ -1,11 +1,7 @@
 import { useState } from "react";
 import Area from "../components/Area";
-import { Badge, Button, Icon, Tab, TabGroup, TabList } from "@tremor/react";
-import {
-  RiArrowUpDoubleFill,
-  RiSortAlphabetAsc,
-  RiSortAlphabetDesc,
-} from "@remixicon/react";
+import { Badge, Icon, Tab, TabGroup, TabList } from "@tremor/react";
+import { RiSortAlphabetAsc, RiSortAlphabetDesc } from "@remixicon/react";
 
 const pageConfig = {
   title: "Home Control",
@@ -45,7 +41,6 @@ const pageConfig = {
 };
 
 export default function HomeControl() {
-  const [scrollY, setScrollY] = useState(0);
   const [sortType, setSortType] = useState("A-Z");
 
   const scrollToArea = (area: string) => {
@@ -53,14 +48,6 @@ export default function HomeControl() {
     if (element) {
       element.scrollIntoView();
     }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo(0, 0);
-  };
-
-  window.onscroll = () => {
-    setScrollY(window.scrollY);
   };
 
   const aToZ = (areaA: any, areaB: any) => areaA.name.localeCompare(areaB.name);
@@ -76,55 +63,45 @@ export default function HomeControl() {
   };
 
   return (
-    <>
+    <div className="w-100">
       <h1 className="text-4xl text-tremor-default-strong dark:text-dark-tremor-content-strong ml-4">
         {pageConfig.title}
       </h1>
-      <div className="flex flex-row gap-4 flex-wrap w-100 m-4">
-        <TabGroup className="" defaultIndex={1}>
-          <TabList variant="solid">
-            {sortTypes.map((sortType) => (
-              <Tab
-                key={sortType.name}
-                onClick={() => handleSortTypeChange(sortType.name)}
+      <div className="mx-4">
+        <div className="flex flex-row gap-4 flex-wrap w-100 my-4">
+          <TabGroup defaultIndex={0}>
+            <TabList variant="solid">
+              {sortTypes.map((sortType) => (
+                <Tab
+                  key={sortType.name}
+                  onClick={() => handleSortTypeChange(sortType.name)}
+                >
+                  <Icon icon={sortType.icon} color="yellow" />
+                </Tab>
+              ))}
+            </TabList>
+          </TabGroup>
+        </div>
+        <div className="flex justify-start flex-wrap gap-3 m-4 md:hidden">
+          {pageConfig.areas
+            .sort(sortTypes.find((sort) => sort.name === sortType)?.sort)
+            .map((area) => (
+              <Badge
+                color={"white"}
+                key={"badge_" + area.name}
+                size={"lg"}
+                onClick={() => scrollToArea(area.name)}
               >
-                <Icon icon={sortType.icon} color="yellow" />
-              </Tab>
+                {area.name}
+              </Badge>
             ))}
-          </TabList>
-        </TabGroup>
-      </div>
-      <div className="flex justify-start flex-wrap gap-3 m-4 md:hidden">
-        {pageConfig.areas
-          .sort(sortTypes.find((sort) => sort.name === sortType)?.sort)
-          .map((area) => (
-            <Badge
-              key={"badge_" + area.name}
-              size={"lg"}
-              onClick={() => scrollToArea(area.name)}
-            >
-              {area.name}
-            </Badge>
-          ))}
+        </div>
       </div>
       <div className="grid grid-flow-row gap-8 mt-10 md:flex md:flex-wrap md:mx-10">
         {pageConfig.areas.map((area) => (
-          <>
-            <Area key={"area_" + area.name} {...area} />
-          </>
+          <Area key={"area_" + area.name} {...area} />
         ))}
       </div>{" "}
-      {scrollY > 0 && (
-        <div className="sticky bottom-4 flex justify-end mr-4 ">
-          <Button
-            className="rounded-full p-0"
-            color="neutral"
-            onClick={scrollToTop}
-          >
-            <Icon icon={RiArrowUpDoubleFill} color="yellow" size="lg" />
-          </Button>
-        </div>
-      )}
-    </>
+    </div>
   );
 }

@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const isExpired = decodedToken?.exp < Date.now() / 1000;
 
     if (!access_token || isExpired) {
-      console.log("yeet");
       localStorage.removeItem("hassToken");
       asyncGetAuth();
     } else {

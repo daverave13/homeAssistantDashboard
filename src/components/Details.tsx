@@ -5,8 +5,6 @@ interface DetailsProps {
 }
 
 const Details = ({ entity }: DetailsProps) => {
-  console.log(entity);
-
   return (
     <div className="px-5 pt-5">
       {entity.attributes.Summary ? (

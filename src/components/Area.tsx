@@ -22,7 +22,7 @@ export default ({ toggleIds, openingIds, name }: AreaProps) => {
         {name}
       </h2>
       <div className="flex justify-center">
-        <div className="my-4 md:flex">
+        <div className="my-4 md:flex md:flex-wrap">
           {entities &&
             toggleIds &&
             toggleIds
